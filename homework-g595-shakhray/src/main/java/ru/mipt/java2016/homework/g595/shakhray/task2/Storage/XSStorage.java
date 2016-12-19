@@ -19,7 +19,7 @@ public class XSStorage<K, V> implements KeyValueStorage<K, V> {
     private File lockfile = new File("lock.me");
 
     /**
-     * TRUE is the database is closed.
+     * TRUE is the model is closed.
      * FALSE otherwise.
      */
     private Boolean isStorageClosed = false;
@@ -36,7 +36,7 @@ public class XSStorage<K, V> implements KeyValueStorage<K, V> {
     private HashMap<K, V> data = new HashMap<K, V>();
 
     /**
-     * An absolute path for the filename with the database.
+     * An absolute path for the filename with the model.
      */
     private String absoluteStoragePath;
     private final String storageFilename = "storage";
@@ -48,7 +48,7 @@ public class XSStorage<K, V> implements KeyValueStorage<K, V> {
     private StorageSerialization<V> valueSerialization;
 
     /**
-     * Random access file with our database
+     * Random access file with our model
      */
     private RandomAccessFile file;
 

@@ -16,7 +16,7 @@ public class MyKeyValueStorage<K, V> implements
     private SerializationStrategy<K> keySerializationStrategy;
     private SerializationStrategy<V> valueSerializationStrategy;
     private boolean isOpen;
-    private static final String HEADER = "Simple Database v0.1";
+    private static final String HEADER = "Simple model v0.1";
 
     public MyKeyValueStorage(String path, SerializationStrategy<K> keySerializationStrategyVal,
                              SerializationStrategy<V> valueSerializationStrategyVal) {
@@ -43,7 +43,7 @@ public class MyKeyValueStorage<K, V> implements
                 try {
                     readFromDisk();
                 } catch (SerializationException e) {
-                    throw new RuntimeException("Failed to load database from file", e);
+                    throw new RuntimeException("Failed to load model from file", e);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -102,7 +102,7 @@ public class MyKeyValueStorage<K, V> implements
                     Channels.newInputStream(databaseFile.getChannel()));
             String header = databaseFile.readUTF();
             if (!header.equals(HEADER)) {
-                throw new SerializationException("Database is inconsistent");
+                throw new SerializationException("model is inconsistent");
             }
             long numberOfEntries = databaseFile.readLong();
 

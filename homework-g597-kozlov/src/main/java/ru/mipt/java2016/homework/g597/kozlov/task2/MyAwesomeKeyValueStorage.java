@@ -28,7 +28,7 @@ public class MyAwesomeKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
     private static final String DB_NAME = "storage.db";  // название базы
     private RandomAccessFile fileDB;  // файл-база
 
-    private File ifopen;  // файл для проверки, что database уже открыта
+    private File ifopen;  // файл для проверки, что model уже открыта
 
     private HashMap<K, V> map;  // храним данные здесь
 

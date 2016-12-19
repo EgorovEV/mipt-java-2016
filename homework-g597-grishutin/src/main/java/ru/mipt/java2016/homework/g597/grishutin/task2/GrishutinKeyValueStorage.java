@@ -34,7 +34,7 @@ class GrishutinKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
 
         lock = lockFilePath.toFile();
         if (!lock.createNewFile()) { // if lock is hold by other kvStorage
-            throw new IllegalAccessException("Database is already opened");
+            throw new IllegalAccessException("model is already opened");
         }
 
         Files.createDirectories(filePath.getParent());

@@ -263,7 +263,7 @@ class LazyByteKeyValueStorageFileIOWrapper<KeyType, ValueType> {
 
             if (!keyTypeStringRead.equals(storageInfo.getKeyTypeString()) ||
                     !valueTypeStringRead.equals(storageInfo.getValueTypeString())) {
-                throw new IOException("Storage Database corrupted.");
+                throw new IOException("Storage model corrupted.");
             }
 
             int keyOffsetMapSize = readInteger(fileIn);

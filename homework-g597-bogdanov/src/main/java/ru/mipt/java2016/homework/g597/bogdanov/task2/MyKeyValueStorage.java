@@ -23,7 +23,7 @@ public class MyKeyValueStorage<K, V> implements KeyValueStorage<K, V>, AutoClose
         }
         lock = new File(path + File.separator + fileName + ".lock");
         if (!lock.createNewFile()) {
-            throw new IOException("Database is already open");
+            throw new IOException("model is already open");
         }
 
         this.fileName = fileName;

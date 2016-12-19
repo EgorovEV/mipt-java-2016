@@ -36,7 +36,7 @@ public class MyKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
         String check = in.readUTF();
 
         if (!check.equals("MyDataBase")) {
-            throw new RuntimeException("It's not my database!");
+            throw new RuntimeException("It's not my model!");
         }
 
         int size = in.readInt();
@@ -49,7 +49,7 @@ public class MyKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
 
     private void isClosed() {
         if (closed) {
-            throw new RuntimeException("Database is closed");
+            throw new RuntimeException("model is closed");
         }
     }
 

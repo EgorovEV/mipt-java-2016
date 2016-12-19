@@ -33,7 +33,7 @@ public class MyKeyValueStorage<K, V> implements KeyValueStorage<K, V>, AutoClose
         String lockPath = path + File.separator + name + ".lock";
         lock = new File(lockPath);
         if (!lock.createNewFile()) {
-            throw new IOException("Database is already open");
+            throw new IOException("model is already open");
         }
 
         elements = new HashMap<>();

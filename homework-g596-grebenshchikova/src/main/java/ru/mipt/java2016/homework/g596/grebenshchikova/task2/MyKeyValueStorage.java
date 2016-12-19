@@ -32,7 +32,7 @@ public class MyKeyValueStorage<Key, Value> implements KeyValueStorage<Key, Value
         String lockPath = path + File.separator + fileName + ".lock";
         lockFile = new File(lockPath);
         if (!lockFile.createNewFile()) {
-            throw new IOException("Database is openned");
+            throw new IOException("model is openned");
         }
 
         elementsDB = new HashMap<>();

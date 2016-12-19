@@ -1,3 +1,4 @@
+
 package ru.mipt.java2016.homework.g596.egorov.task3;
 
 import ru.mipt.java2016.homework.g596.egorov.task3.serializers.AdvancedSerializerInterface;

@@ -8,4 +8,3 @@ public interface AdvancedSerializerInterface<T> {
 
     T deserialize(String s);
 }
-

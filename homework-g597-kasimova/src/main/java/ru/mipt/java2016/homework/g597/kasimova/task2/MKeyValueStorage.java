@@ -30,8 +30,8 @@ public class MKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
         if (!directory.exists() || !directory.isDirectory()) {
             throw new RuntimeException("Error: Invalid directory name.");
         }
-        filePath = path + File.separator + "database.txt";
-        File database = new File(directory, "database.txt");
+        filePath = path + File.separator + "model.txt";
+        File database = new File(directory, "model.txt");
         if (database.exists()) {
             try (DataInputStream fileReading = new DataInputStream(new FileInputStream(database))) {
                 int fileSize = fileReading.readInt();

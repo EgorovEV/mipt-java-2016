@@ -22,14 +22,14 @@ public class Storage<K, V> implements KeyValueStorage<K, V> {
         this.keySerializer = keySerializer;
         this.valueSerializer = valueSerializer;
 
-        lock = new File(path + File.separator + "database.lock");
+        lock = new File(path + File.separator + "model.lock");
         boolean isLock = !lock.createNewFile();
 
         if (isLock) {
-            throw new RuntimeException("database is not available at the moment");
+            throw new RuntimeException("model is not available at the moment");
         }
 
-        file = new File(path + File.separator + "database.db");
+        file = new File(path + File.separator + "model.db");
         if (!file.exists()) {
             return;
         }
@@ -39,7 +39,7 @@ public class Storage<K, V> implements KeyValueStorage<K, V> {
             String fileCode = in.readUTF();
 
             if (!fileCode.equals(myStorageCode)) {
-                throw new RuntimeException("database check error");
+                throw new RuntimeException("model check error");
             }
 
             int fileElementsCount = Integer.parseInt(in.readUTF());

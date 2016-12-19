@@ -22,7 +22,7 @@ public class SSTable<K, V> {
         kSerializator = keySer;
         valSerializator = valSer;
         if (check.exists() && check.isDirectory()) {
-            filePath = path + "/database.txt";
+            filePath = path + "/model.txt";
             data = new File(filePath);
         } else {
             throw new IOException();

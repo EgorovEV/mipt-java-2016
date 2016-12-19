@@ -29,10 +29,10 @@ public class MyKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
         try {
             cntValues = intSerialization.deserialize(file);
         } catch (IOException error) {
-            throw new ParseException("Invalid database", (int) file.getFilePointer());
+            throw new ParseException("Invalid model", (int) file.getFilePointer());
         }
         if (cntValues < 0) {
-            throw new ParseException("Invalid database", (int) file.getFilePointer());
+            throw new ParseException("Invalid model", (int) file.getFilePointer());
         }
         for (int q = 0; q < cntValues; ++q) {
             try {
@@ -40,7 +40,7 @@ public class MyKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
                 V value = valueSerialization.deserialize(file);
                 objects.putIfAbsent(key, value);
             } catch (IOException error) {
-                throw new ParseException("Invalid database", (int) file.getFilePointer());
+                throw new ParseException("Invalid model", (int) file.getFilePointer());
             }
         }
     }
@@ -64,13 +64,13 @@ public class MyKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
-            throw new IllegalStateException("Error during opening database");
+            throw new IllegalStateException("Error during opening model");
         }
     }
 
     private void checkIsNotClosed() {
         if (isClosed) {
-            throw new IllegalStateException("Cannot access to closed database");
+            throw new IllegalStateException("Cannot access to closed model");
         }
     }
 

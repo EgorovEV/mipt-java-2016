@@ -15,6 +15,7 @@ import ru.mipt.java2016.homework.tests.task3.KeyValueStoragePerformanceTest;
  * @author Fedor S. Lavrentyev
  * @since 25.10.16
  */
+/*
 
 public class MyAdvancedStorageTest extends KeyValueStoragePerformanceTest {
 
@@ -34,4 +35,4 @@ public class MyAdvancedStorageTest extends KeyValueStoragePerformanceTest {
         return new MyAdvancedKeyValueStorage(path,
                 new AdvancedSerializerofStudentKey(), new AdvancedSerializerofStudent());
     }
-}
+}*/

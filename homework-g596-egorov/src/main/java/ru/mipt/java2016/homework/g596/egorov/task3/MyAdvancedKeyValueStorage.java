@@ -23,8 +23,8 @@ import java.util.zip.CheckedInputStream;
  */
 
 
-public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
-    private class Location {
+//public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
+    /*private class Location {
         private int fileNum;
         private long offset;
 
@@ -43,11 +43,11 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
     private AdvancedSerializerInterface<K> keySerializer;
     private AdvancedSerializerInterface<V> valueSerializer;
     private boolean opened;
-    private ArrayList<RandomAccessFile> files;
+    //private ArrayList<RandomAccessFile> files;
     private Adler32 hashsum;
 
-    private static final int MEMORYPAGESIZE = 1000;  //размер страницы памяти.
-                                                    // Выделяемый буфер под Map кратен размерустраницы памяти
+    private static final int MEMORYPAGESIZE = 1024;  //размер страницы памяти.
+    // Выделяемый буфер под Map кратен размерустраницы памяти (в килобайтах:(  )
 
     private void getFileHash(Adler32 md, String name) {
         try (InputStream is = new BufferedInputStream(new FileInputStream(new File(name)));
@@ -72,9 +72,9 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
                 throw new MalformedDataException("INVALID DB");
             }
             hashsum = new Adler32();
-            for (int i = 0; i < numOfFiles; ++i) {
+            *//*for (int i = 0; i < numOfFiles; ++i) {
                 getFileHash(hashsum, getFileName(i));
-            }
+            }*//*
             if (numOfFiles != 0 && hashsum.getValue() != rd.readLong()) {
                 throw new MalformedDataException("INVALID DB");
             }
@@ -83,12 +83,12 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
         }
     }
 
-    private String getFileName(Integer i) {
-        if (i.equals(-1)) {
+    *//*private String getFileName(int i) {
+        if (i == -1) {
             return fileName + ".txt";
         }
-        return fileName + i.toString() + ".txt";
-    }
+        return fileName + i + ".txt";
+    }*//*
 
     private void checkOpenness() {
         if (!opened) {
@@ -98,8 +98,8 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
 
     private void reduceFresh(boolean close) {
         if (close || tableFresh.size() >= MEMORYPAGESIZE) {
-            int numNewFile = files.size();
-            String newFile = getFileName(numNewFile);
+            //int numNewFile = files.size();
+            String newFile = fileName;//getFileName(numNewFile);
             File file = new File(newFile);
 
             if (!file.exists()) {
@@ -109,25 +109,25 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
                     throw new MalformedDataException("COULDN'T CREATE FILE", e);
                 }
             }
-            try {
-                files.add(new RandomAccessFile(newFile, "rw"));
-                RandomAccessFile curFile = files.get(numNewFile);
-                curFile.setLength(0);
-                curFile.seek(0);
-                for (Map.Entry<K, V> entry: tableFresh.entrySet()) {
-                    if (entry.getValue().equals(null)) {
-                        mapPlace.remove(entry.getKey());
-                        continue;
-                    }
-                    Location newLoc = new Location(numNewFile, curFile.getFilePointer());
-                    mapPlace.put(entry.getKey(), newLoc);
-                    curFile.writeUTF(valueSerializer.serialize(entry.getValue()));
-                }
+            //try {
+                //files.add(new RandomAccessFile(newFile, "rw"));
+                //RandomAccessFile curFile = files.get(numNewFile);
+                //curFile.setLength(0);
+                //curFile.seek(0);
+                //for (Map.Entry<K, V> entry: tableFresh.entrySet()) {
+                //    if (entry.getValue().equals(null)) {
+                //        mapPlace.remove(entry.getKey());
+                //        continue;
+                //    }
+                //    Location newLoc = new Location(numNewFile, curFile.getFilePointer());
+                //    mapPlace.put(entry.getKey(), newLoc);
+                //    curFile.writeUTF(valueSerializer.serialize(entry.getValue()));
+                //}
                 tableFresh.clear();
-                getFileHash(hashsum, newFile);
-            } catch (IOException e) {
-                throw new MalformedDataException("COULDN'T GET RANDOMACCESSFILE", e);
-            }
+               // getFileHash(hashsum, newFile);
+            //} catch (IOException e) {
+            //    throw new MalformedDataException("COULDN'T GET RANDOMACCESSFILE", e);
+            //}
         }
     }
 
@@ -140,11 +140,11 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
         tableFresh = new HashMap<K, V>();
         keyStorage = new HashSet<K>();
         opened = true;
-        files = new ArrayList<RandomAccessFile>();
+        //files = new ArrayList<RandomAccessFile>();
         opened = true;
 
-        String mainFile = getFileName(-1);
-        File file = new File(mainFile);
+        //String mainFile = getFileName(-1);
+        File file = new File(fileName);//(mainFile);
         File integrityFile = new File(intFileName);
 
         if (!file.exists()) {
@@ -156,11 +156,11 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
             } catch (IOException e) {
                 throw new MalformedDataException("CREATION ERRORE", e);
             }
-            try (DataOutputStream wr = new DataOutputStream(new FileOutputStream(mainFile));
+            try (DataOutputStream wr = new DataOutputStream(new FileOutputStream(fileName));//(mainFile));
                  DataOutputStream wrInt = new DataOutputStream(new FileOutputStream(intFileName))) {
                 wr.writeUTF(CHECKER);
-                wr.writeInt(0);
-                wr.writeInt(0);
+                //wr.writeInt(0);
+                //wr.writeInt(0);
                 wrInt.writeInt(0);
             } catch (IOException e) {
                 throw new MalformedDataException("WRITING ERRORE", e);
@@ -171,25 +171,25 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
             throw new MalformedDataException("FILE NOT FOUND");
         }
 
-        try (DataInputStream rd = new DataInputStream(new FileInputStream(mainFile))) {
+        try (DataInputStream rd = new DataInputStream(new FileInputStream(fileName))) {//(mainFile))) {
             if (!rd.readUTF().equals(CHECKER)) {
                 throw new MalformedDataException("Invalid file");
             }
-            int numberOfFiles = rd.readInt();
-            checkIntegrity(numberOfFiles);
-            for (int i = 0; i < numberOfFiles; ++i) {
-                File curFile = new File(getFileName(i));
-                if (!curFile.exists()) {
-                    throw new MalformedDataException("Couldn't find file with data");
-                }
-                files.add(new RandomAccessFile(curFile, "rw"));
-            }
-            int numberOfLines = rd.readInt();
-            for (int i = 0; i < numberOfLines; ++i) {
+            //int numberOfFiles = rd.readInt();
+            //checkIntegrity(numberOfFiles);
+            //for (int i = 0; i < numberOfFiles; ++i) {
+            //    File curFile = new File(fileName);//(getFileName(i));
+            //    if (!curFile.exists()) {
+            //       throw new MalformedDataException("Couldn't find file with data");
+            //    }
+            //    files.add(new RandomAccessFile(curFile, "rw"));
+            //}
+            //int numberOfLines = rd.readInt();
+            //for (int i = 0; i < numberOfLines; ++i) {
                 K key = keySerializer.deserialize(rd.readUTF());
-                int fileNum = rd.readInt();
-                long offset = rd.readLong();
-                mapPlace.put(key, new Location(fileNum, offset));
+                //int fileNum = rd.readInt();
+                //long offset = rd.readLong();
+                //mapPlace.put(key, new Location(fileNum, offset));
                 keyStorage.add(key);
             }
         } catch (IOException e) {
@@ -259,8 +259,8 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
         reduceFresh(true);
         opened = false;
 
-        String mainFile = getFileName(-1);
-        try (DataOutputStream wr = new DataOutputStream(new FileOutputStream(mainFile))) {
+        //String mainFile = getFileName(-1);
+        try (DataOutputStream wr = new DataOutputStream(new FileOutputStream(fileName))){//(mainFile))) {
             wr.writeUTF(CHECKER);
             wr.writeInt(files.size());
             wr.writeInt(mapPlace.size());
@@ -278,5 +278,5 @@ public class MyAdvancedKeyValueStorage<K, V> implements KeyValueStorage<K, V> {
             }
             wr.writeLong(hashsum.getValue());
         }
-    }
-}
+    }*/
+//}
