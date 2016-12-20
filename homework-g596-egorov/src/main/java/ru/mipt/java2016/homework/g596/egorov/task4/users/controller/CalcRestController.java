@@ -3,22 +3,16 @@ package ru.mipt.java2016.homework.g596.egorov.task4.users.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 import ru.mipt.java2016.homework.base.task1.ParsingException;
-import ru.mipt.java2016.homework.g596.egorov.task4.Calculator.FuncCalc;
 import ru.mipt.java2016.homework.g596.egorov.task4.Calculator.MyCalculator;
 import ru.mipt.java2016.homework.g596.egorov.task4.database.Application;
 import ru.mipt.java2016.homework.g596.egorov.task4.database.UserDB;
-import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -66,11 +60,10 @@ public class CalcRestController {
     }
 
     @RequestMapping(path = "user/{username}/calc", method = RequestMethod.PUT)
-    public void addCalculations(@PathVariable String username,
-                                @RequestParam String toCalculate) {
+    public void addCalculations(@PathVariable String username, @RequestBody String toCalculate) {
         logger.info("_____________START_______________");
         try {
-            logger.info("_____________IN TRY_______________");
+            logger.info("_____________IN TRY_______________" + toCalculate);
             String CalcHistory = toCalculate + '=' + Double.toString(MyCalculator.calculate(toCalculate));
             userCalculators.put(username, CalcHistory);
         } catch (ParsingException e) {
@@ -80,14 +73,15 @@ public class CalcRestController {
     }
 
     @RequestMapping(path = "user/{username}/history", method = RequestMethod.GET)
-    public List<String> showHistory(@PathVariable String username){
-        
+    public ArrayList<String> showHistory(@PathVariable String username){
+        ArrayList ans = new ArrayList();
+        for(Map.Entry<String, String> e : userCalculators.entrySet()) {
+            if(e.getKey().equals(username)) {
+                ans.add(e.getValue());
+            }
+        }
+        return ans;
     }
-
-
-    //сделать загрузку строки в usercalculators, где строка будет передаваться
-    //калькулятору из первого задания.
     //сделать админку
     //сделать новый калькулятор
-
 }
