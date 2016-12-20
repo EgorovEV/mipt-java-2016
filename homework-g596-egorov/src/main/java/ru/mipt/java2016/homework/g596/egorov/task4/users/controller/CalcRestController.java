@@ -3,6 +3,7 @@ package ru.mipt.java2016.homework.g596.egorov.task4.users.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,16 @@ public class CalcRestController {
     @Autowired
     private static Map<String, String> userCalculators = new HashMap<>();
 
-
+    private boolean existingUser(String username) {
+        try {
+            calculatorDao.loadUser(username);
+            logger.info("Try to read user" + username);
+            return true;
+        } catch (EmptyResultDataAccessException e) {
+            logger.info("adding user " + username);
+            return false;
+        }
+}
 
     @RequestMapping(path = "/ping", method = RequestMethod.GET, produces = "text/plain")
     public String echo() {
@@ -37,14 +47,13 @@ public class CalcRestController {
     public String addUser(Authentication authentication,
                           @PathVariable String username,
                           @RequestParam String password) {
-        String requesterUsername = authentication.getName();
-
-        if (!requesterUsername.equals(requesterUsername)) {
-            return "You are not an admin. Cannot add users." + '\n';
-        } else {
-            calculatorDao.addUser(username, password);
-                return "User " + username + " successfully created." + '\n';
+        if (existingUser(username)) {
+            return "This user exists already!";
         }
+        String requesterUsername = authentication.getName();
+        calculatorDao.addUser(username, password);
+        return "User " + username + " successfully created." + '\n';
+
     }
 
     @RequestMapping(path = "user/{username}", method = RequestMethod.GET)
@@ -52,22 +61,15 @@ public class CalcRestController {
         return calculatorDao.loadUser(username);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Error spittleNotFound(UserNotFoundException e) {
-        long userId = e.getUserId();
-        return new Error(4, "User [" + userId + "] not found");
-    }
 
     @RequestMapping(path = "user/{username}/calc", method = RequestMethod.PUT)
     public void addCalculations(@PathVariable String username, @RequestBody String toCalculate) {
-        logger.info("_____________START_______________");
         try {
-            logger.info("_____________IN TRY_______________" + toCalculate);
+            logger.info("___I try to calculate:___" + toCalculate);
             String CalcHistory = toCalculate + '=' + Double.toString(MyCalculator.calculate(toCalculate));
             userCalculators.put(username, CalcHistory);
         } catch (ParsingException e) {
-            logger.info("_____________IN CATCH_______________");
+            logger.info("_____________!MISTAKE!_______________");
             e.printStackTrace();
         }
     }
@@ -82,6 +84,5 @@ public class CalcRestController {
         }
         return ans;
     }
-    //сделать админку
     //сделать новый калькулятор
 }
