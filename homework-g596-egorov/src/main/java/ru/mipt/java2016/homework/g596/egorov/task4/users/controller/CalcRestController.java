@@ -23,8 +23,8 @@ import java.util.Map;
 
 @RestController
 public class CalcRestController {
-    private MyCalculator MyCalculator;
-    
+    private MyCalculator MyCalculator = new MyCalculator();
+
     private static final Logger logger =
             LoggerFactory.getLogger(CalcRestController.class.getName());
     @Autowired
@@ -68,17 +68,20 @@ public class CalcRestController {
     @RequestMapping(path = "user/{username}/calc", method = RequestMethod.PUT)
     public void addCalculations(@PathVariable String username,
                                 @RequestParam String toCalculate) {
-        logger.info("_____________STRART_______________");
+        logger.info("_____________START_______________");
         try {
             logger.info("_____________IN TRY_______________");
-            MyCalculator.calculate(toCalculate);
-            logger.info("_____________AFTERCALC_______________");
-            //String CalcHistory = toCalculate + result;
-            //logger.info("Calculated:" + CalcHistory);
+            String CalcHistory = toCalculate + '=' + Double.toString(MyCalculator.calculate(toCalculate));
+            userCalculators.put(username, CalcHistory);
         } catch (ParsingException e) {
             logger.info("_____________IN CATCH_______________");
             e.printStackTrace();
         }
+    }
+
+    @RequestMapping(path = "user/{username}/history", method = RequestMethod.GET)
+    public List<String> showHistory(@PathVariable String username){
+        
     }
 
 
